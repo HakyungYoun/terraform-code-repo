@@ -22,6 +22,12 @@ steps:
   - script: |
       echo "배포 시작"
       
+      # 1. 환경 변수 세팅 (메모리에 저장됨)
+      export ARM_CLIENT_ID=${{ parameters.ARM_CLIENT_ID }}
+      export ARM_CLIENT_SECRET=${{ parameters.ARM_CLIENT_SECRET }}
+      export ARM_TENANT_ID=${{ parameters.ARM_TENANT_ID }}
+      export ARM_SUBSCRIPTION_ID=${{ parameters.ARM_SUBSCRIPTION_ID }}
+
       cd /home/ubuntu/terraform-shell-test/
       ./${{ parameters.RESOURCE }}-deploy.sh ${{ parameters.PROJECT }} ${{ parameters.REQUEST_ID }} ${{ parameters.ACTION }}
     displayName: 'Azure Pipeline 테스트'
