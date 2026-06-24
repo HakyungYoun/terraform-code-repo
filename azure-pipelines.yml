@@ -1,0 +1,28 @@
+trigger: none
+
+parameters:
+  - name: REQUEST_ID
+    type: string
+
+  - name: PROJECT
+    type: string
+
+  - name: ACTION
+    type: string
+
+  - name: RESOURCE
+    type: string
+
+pool:
+  name: 'skr-azure-pipeline'
+
+steps:
+  - checkout: none
+
+  - script: |
+      echo "배포 시작"
+      
+      cd /home/ubuntu/terraform-shell-test/
+      ./${{ parameters.RESOURCE }}-deploy.sh ${{ parameters.PROJECT }} ${{ parameters.REQUEST_ID }} ${{ parameters.ACTION }}
+    displayName: 'Azure Pipeline 테스트'
+
