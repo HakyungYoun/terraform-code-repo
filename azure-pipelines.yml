@@ -3,13 +3,10 @@ trigger: none
 parameters:
   - name: REQUEST_ID
     type: string
-
   - name: PROJECT
     type: string
-
   - name: ACTION
     type: string
-
   - name: RESOURCE
     type: string
 
@@ -19,10 +16,19 @@ pool:
 steps:
   - checkout: none
 
-  - script: |
-      echo "배포 시작"
-
-      cd /home/ubuntu/terraform-shell-test/
-      ./${{ parameters.RESOURCE }}-deploy.sh ${{ parameters.PROJECT }} ${{ parameters.REQUEST_ID }} ${{ parameters.ACTION }}
-    displayName: 'Azure Pipeline 테스트'
+  # 핵심: AzureCLI@2 태스크가 Service Connection을 통해 자동으로 인증을 수행합니다.
+  - task: AzureCLI@2
+    inputs:
+      # 여기에 생성하신 Service Connection 이름을 넣으세요.
+      azureSubscription: 'SKR-Service-Connection'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        echo "배포 시작"
+        
+        # 이제 이 안에서는 az 명령어가 자동으로 로그인된 상태로 실행됩니다.
+        # 기존 스크립트 실행
+        cd /home/ubuntu/terraform-shell-test/
+        ./${{ parameters.RESOURCE }}-deploy.sh ${{ parameters.PROJECT }} ${{ parameters.REQUEST_ID }} ${{ parameters.ACTION }}
+    displayName: 'Azure Pipeline 테스트 (Service Connection 적용)'
 
